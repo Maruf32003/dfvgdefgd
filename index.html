@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Form</title>
+</head>
+<body>
+    <h1>Contact Us</h1>
+    <form id="contact-form">
+        <label>Your Name:
+            <input type="text" id="name" name="name" required>
+        </label><br>
+        <label>Your Email:
+            <input type="email" id="email" name="email" required>
+        </label><br>
+        <label>Your Phone:
+            <input type="tel" id="phone" name="phone">
+        </label><br>
+        <label>Subject:
+            <input type="text" id="subject" name="subject" required>
+        </label><br>
+        <label>Your Message:
+            <textarea id="message" name="message" rows="5" required></textarea>
+        </label><br>
+        <button type="submit">Send</button>
+    </form>
+
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Capture form data
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Send data to Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycbwLoz28YvSTnwGWYm71uKA1lnSNUnxkItz0ZBbIf35V-lG6NHvlP6_KDogTvrU9iS2IVA/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+                mode: 'cors' // Make sure the CORS mode is enabled
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Result:', result);
+                if (result.status === 'success') {
+                    alert('Your message has been sent!');
+                    document.getElementById('contact-form').reset();
+                } else {
+                    alert('There was a problem sending your message.');
+                }
+            })
+            .catch(error => {
+                alert('An error occurred.');
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
